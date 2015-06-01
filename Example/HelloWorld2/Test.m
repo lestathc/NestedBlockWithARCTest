@@ -8,6 +8,8 @@ typedef void(^Block)();
 
 @property (copy) Block holdBlock1;
 @property (copy) Block holdBlock2;
+@property (copy) Block holdBlock3;
+@property (copy) Block holdBlock4;
 
 @end
 
@@ -23,20 +25,20 @@ typedef void(^Block)();
       strongSelf.value = 2; // memory leak, compiler warning
       weakSelf.value = 2; // no memory leak
     };
-    weakSelf.holdBlock2 = ^ {
-      strongSelf.value = 2; // memory leak, no compiler warning
-      weakSelf.value = 2; // is it leak? I think no leak
+    weakSelf.holdBlock3 = ^ {
+      strongSelf.value = 3; // memory leak, no compiler warning
+      weakSelf.value = 3; // is it leak? I think no leak
     };
     localBlock = ^ {
-      strongSelf.value = 3; // currently, no leak. Ref#1
+      strongSelf.value = 4; // currently, no leak. Ref#1
     };
     localBlock();
     strongSelf.holdBlock2();
   };
   self.holdBlock1();
   NSLog(@"%d", self.value);
-  self.holdBlock1 = localBlock; // memory leak, due to Ref#1.
-  self.holdBlock1();
+  self.holdBlock4 = localBlock; // memory leak, due to Ref#1.
+  self.holdBlock4();
   NSLog(@"%d", self.value);
 }
 
